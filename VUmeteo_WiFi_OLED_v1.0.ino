@@ -5,7 +5,7 @@
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
 #include <WiFiManager.h>
-#include <EEPROM.h>
+//#include <EEPROM.h>
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <ESP8266_SSD1322.h>
@@ -44,6 +44,7 @@ unsigned long currentMillis = 0;
 long interval = 9000;
 
 int configPin = 5;
+int configPinExt = 4;
 int eepromSize = 256;
 
 //matavimu kiekis atmosferos slegio irasams
@@ -71,51 +72,29 @@ WiFiClient client;
 
 ESP8266_SSD1322 display(OLED_DC, OLED_RESET, OLED_CS);
 
+
 void setup() {
 
-  EEPROM.begin(eepromSize);
+  //EEPROM.begin(eepromSize);
   Serial.begin(115200);
   delay(10);
-
+  //WiFiManager wifiManager;
+  //wifiManager.autoConnect("iTermometras");
   display.begin(true);
-
   pinMode(configPin, INPUT_PULLUP);
+  pinMode(configPinExt, INPUT_PULLUP);
 
-  /*
-    if (digitalRead(configPin) == LOW) {
-      configmode = true;
-    }
-  */
-  // We start by connecting to a WiFi network
-
+  if (digitalRead(configPin) == LOW) {
+    configmode = true;
+  }
 
   //
   //CONFIG mode start
   //
 
   if (configmode) {
-
-
-  } else {
-
-
-    Serial.println();
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-
-    WiFi.mode(WIFI_STA);
-    Serial.println("entering data collection mode");
-    WiFi.begin(ssid, password);
-
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-      //showErrHttp();
-    }
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
+    WiFiManager wifiManager;
+    wifiManager.startConfigPortal("iTermometras");
   }
 
 }
