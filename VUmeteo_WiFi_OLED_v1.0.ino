@@ -5,7 +5,6 @@
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
 #include <WiFiManager.h>
-//#include <EEPROM.h>
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <ESP8266_SSD1322.h>
