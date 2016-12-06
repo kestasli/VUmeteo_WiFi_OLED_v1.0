@@ -18,15 +18,6 @@
 #define OLED_DC     2   // Pin 20 - DC digital signal
 #define OLED_RESET  16  // Pin 15 -RESET digital signal
 
-const char* ssid     = "TEO-130392";
-const char* password = "skMQyjleDz3qq2Uo2jKsHMJDzJ";
-
-//const char* ssid     = "BBguest";
-//const char* password = "J4mT1now";
-
-//VU meteo stotis
-//http://www.hkk.gf.vu.lt/json.php
-
 //const char host[] = "eismoinfo.lt";
 //const int port = 80;
 //const char url[] = "GET /weather-conditions-retrospective?id=310&number=1 HTTP/1.1";
@@ -45,7 +36,6 @@ long interval = 9000;
 
 int configPin = 5;
 int configPinExt = 4;
-int eepromSize = 256;
 
 //matavimu kiekis atmosferos slegio irasams
 const int numOfMeasures = 24;
@@ -64,22 +54,14 @@ float windspeed;
 int humidity;
 float pressure;
 
-//char ssid[64];
-//char pass[64];
-
-//ESP8266WebServer server (80);
 WiFiClient client;
 
 ESP8266_SSD1322 display(OLED_DC, OLED_RESET, OLED_CS);
 
-
 void setup() {
 
-  //EEPROM.begin(eepromSize);
   Serial.begin(115200);
   delay(10);
-  //WiFiManager wifiManager;
-  //wifiManager.autoConnect("iTermometras");
   display.begin(true);
   pinMode(configPin, INPUT_PULLUP);
   pinMode(configPinExt, INPUT_PULLUP);
@@ -88,9 +70,7 @@ void setup() {
     configmode = true;
   }
 
-  //
   //CONFIG mode start
-  //
 
   if (configmode) {
     WiFiManager wifiManager;
@@ -487,8 +467,6 @@ void showTemp(float temp) {
   display.setTextColor(WHITE);
   display.setFont(&FreeSansBold44pt7b);
   display.setTextWrap(false);
-  //display.setCursor(3, 58);
-  //display.setCursor(0, 60);
   display.setCursor(0, 61);
   display.print(tempstring);
 
