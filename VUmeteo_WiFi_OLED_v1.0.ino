@@ -17,13 +17,13 @@
 #define OLED_DC     2   // Pin 20 - DC digital signal
 #define OLED_RESET  16  // Pin 15 -RESET digital signal
 
-//const char host[] = "eismoinfo.lt";
-//const int port = 80;
-//const char url[] = "GET /weather-conditions-retrospective?id=310&number=1 HTTP/1.1";
-
-const char host[] = "www.hkk.gf.vu.lt";
+const char host[] = "eismoinfo.lt";
 const int port = 80;
-const char url[] = "GET /json.php HTTP/1.1";
+const char url[] = "GET /weather-conditions-retrospective?id=310&number=1 HTTP/1.1";
+
+//const char host[] = "www.hkk.gf.vu.lt";
+//const int port = 80;
+//const char url[] = "GET /json.php HTTP/1.1";
 
 boolean configmode = false;
 boolean debugmode = false;
@@ -66,7 +66,7 @@ void setup() {
   pinMode(configPinExt, INPUT_PULLUP);
 
   //ESP.eraseConfig();
-  
+
   if (digitalRead(configPin) == LOW) {
     configmode = true;
   }
@@ -89,8 +89,8 @@ void loop() {
 
     previousMillis = currentMillis;
 
-    int datastatus = readDataVU();
-    //int datastatus = readDataKD();
+    //int datastatus = readDataVU();
+    int datastatus = readDataKD();
 
     if (datastatus == 0) {
 
@@ -494,5 +494,3 @@ float convertChar(char *a) {
   result = atof (a);
   return result;
 }
-
-
