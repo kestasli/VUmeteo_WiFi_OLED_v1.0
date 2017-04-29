@@ -31,7 +31,7 @@ boolean debugmode = false;
 unsigned long previousMillis = 0;
 unsigned long currentMillis = 0;
 //long interval = 5000;
-long interval = 9000;
+long interval = 60000;
 
 int configPin = 5;
 int configPinExt = 4;
@@ -50,6 +50,7 @@ int errCount = 0;
 
 float temperature;
 float windspeed;
+float dewpoint;
 int humidity;
 float pressure;
 
@@ -96,37 +97,10 @@ void loop() {
 
       display.clearDisplay();
       showTemp(temperature);
-      drawGraph(pressureArray, numOfMeasures, pressure);
+      //drawGraph(pressureArray, numOfMeasures, pressure);
       drawBars(windspeed);
       display.display();
 
-      if (readingSeq == 0 | readingSeq >= skipMeasures) {
-
-        //pastumia visas vertes masyve per 1 pozicija link pradzios
-
-        for (int i = 0 ; i < numOfMeasures - 1 ; i++) {
-          pressureArray[i] = pressureArray[i + 1];
-        }
-
-        //iraso i paskutini laukeli nauja slegio verte
-        pressureArray[23] = pressure;
-        /*
-          Serial.print("Presure: ");
-          Serial.println(pressureArray[23]);
-        */
-        /*
-          for (int i = 0; i < numOfMeasures; i++){
-          Serial.print(pressureArray[i]);
-          Serial.print(',');
-          }
-          Serial.println();
-        */
-
-        //uznulina matavimu skaitliuka
-        readingSeq = 0;
-
-      }
-      readingSeq++;
     } else {
       //skaiciuojame klaidu kieki ir po kazkokio kiekio parodome klaida displejuje
       errCount++;
@@ -186,9 +160,8 @@ int readDataKD() {
 
       temperature = root["oro_temperatura"];
       windspeed = root["vejo_greitis_vidut"];
-      humidity = root["rasos_taskas"];
-      pressure = root["zeno_BP1_5s_Mb"];
-
+      dewpoint = root["rasos_taskas"];
+      humidity = getHumidity(temperature, dewpoint);
 
       //Serial.print("Reading Nr: ");
       //Serial.println(readingSeq);
@@ -196,10 +169,10 @@ int readDataKD() {
       Serial.println(temperature);
       Serial.print("Windspeed: ");
       Serial.println(windspeed);
+      Serial.print("Dewpoint: ");
+      Serial.println(dewpoint);
       Serial.print("Humidity: ");
       Serial.println(humidity);
-      Serial.print("Pressure: ");
-      Serial.println(pressure);
 
 
     }
@@ -293,10 +266,10 @@ int readDataVU() {
 // windspeed vizualizacija su bars'ais
 void drawBars(float windspeed) {
 
-  int barWidth = 5;
+  int barWidth = 4;
   int barSpace = 1;
   int barMaxHeight = 16;
-  int valueCount = 8;
+  int valueCount = 10;
 
   //grafiko pradzios koordinates
   int x = 204;
@@ -493,4 +466,12 @@ float convertChar(char *a) {
 
   result = atof (a);
   return result;
+}
+
+//Apskaiciuoja santykini dregnuma is dewpoint ir temperaturos
+float getHumidity(float T, float TD) {
+
+  float humidity = 100 * pow((112 - 0.1 * T + TD) / (112 + 0.9 * T), 8);
+  return humidity;
+
 }
