@@ -65,6 +65,8 @@ void setup() {
   pinMode(configPin, INPUT_PULLUP);
   pinMode(configPinExt, INPUT_PULLUP);
 
+  //ESP.eraseConfig();
+  
   if (digitalRead(configPin) == LOW) {
     configmode = true;
   }
@@ -73,6 +75,7 @@ void setup() {
 
   if (configmode) {
     WiFiManager wifiManager;
+    wifiManager.resetSettings();
     wifiManager.startConfigPortal("iTermometras");
   }
 
