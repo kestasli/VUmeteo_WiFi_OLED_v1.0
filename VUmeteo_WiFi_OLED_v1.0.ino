@@ -54,7 +54,6 @@ float dewpoint;
 int humidity;
 float pressure;
 
-WiFiClient client;
 
 ESP8266_SSD1322 display(OLED_DC, OLED_RESET, OLED_CS);
 
@@ -124,7 +123,7 @@ int readDataKD() {
 
   //set JSON buffer
   StaticJsonBuffer<512> jsonBuffer;
-
+  WiFiClient client;
   if (client.connect(host, port)) {
 
     //client.setTimeout(2000);
@@ -199,6 +198,7 @@ int readDataVU() {
 
   //set JSON buffer
   StaticJsonBuffer<512> jsonBuffer;
+  WiFiClient client;
 
   if (client.connect(host, port)) {
 
