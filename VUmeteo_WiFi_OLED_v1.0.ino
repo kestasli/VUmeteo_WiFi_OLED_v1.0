@@ -100,8 +100,7 @@ void loop() {
       //drawGraph(pressureArray, numOfMeasures, pressure);
       drawBars(windspeed);
       showHumidity(humidity);
-      //showHumidity(100);
-      
+
       display.display();
 
     } else {
@@ -121,19 +120,18 @@ void loop() {
 //-------------------------------------------------------------
 
 //read JSON data from eismoinfo.lt server
-
 int readDataKD() {
   char jsonData[512];
 
   //set JSON buffer
   StaticJsonBuffer<512> jsonBuffer;
   WiFiClient client;
-  
+
   if (client.connect(host, port)) {
 
     //client.setTimeout(2000);
-    //Serial.println("Connected to server");
-    
+    Serial.println("Connected");
+
     client.print(url);
     client.print("\r\n");
     client.print("Host: ");
@@ -141,24 +139,14 @@ int readDataKD() {
     client.print("\r\n");
     client.print("Connection: close\r\n\r\n");
 
-    delay(500);
+    delay(200);
 
     if (client.find("[")) {
-
-      //Serial.println("Header found");
-
       int i = 0;
-
       while (client.available()) {
-        jsonData[i] = client.read();;
+        jsonData[i] = client.read();
         i++;
       }
-
-      client.stop();
-      
-      jsonData[i] = '\0';
-
-      //Serial.println(jsonData);
 
       JsonObject& root = jsonBuffer.parseObject(jsonData);
 
@@ -182,21 +170,12 @@ int readDataKD() {
       Serial.println(dewpoint);
       Serial.print("Humidity: ");
       Serial.println(humidity);
-
-
     }
 
   } else {
-    Serial.println ("Unable to connect to server");
+    Serial.println ("Unable to connect");
     //client.stop();
     return 1;
-  }
-
-  // if the server's disconnected, stop the client:
-  if (!client.connected()) {
-    Serial.println();
-    Serial.println("Disconnecting from server.");
-    client.stop();
   }
   return 0;
 }
@@ -474,7 +453,7 @@ void showHumidity(int hum){
   */
   //humstring[3] = '%';
   //displaystring[4] = '\n';
-  
+
   //dtostrf(humidity, 5, 1, humiditystring);
 
   display.setTextColor(WHITE);
