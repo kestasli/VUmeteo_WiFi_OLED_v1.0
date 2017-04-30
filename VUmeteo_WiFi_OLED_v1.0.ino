@@ -11,6 +11,7 @@
 
 #include <Fonts/FreeSans9pt7b.h>
 #include <Fonts/FreeSansBold44pt7b.h>
+#include <Fonts/FreeSansBold9pt7b.h>
 
 //ESP8266 Pins
 #define OLED_CS     15  // Pin 19, CS - Chip select
@@ -98,6 +99,9 @@ void loop() {
       showTemp(temperature);
       //drawGraph(pressureArray, numOfMeasures, pressure);
       drawBars(windspeed);
+      showHumidity(humidity);
+      //showHumidity(100);
+      
       display.display();
 
     } else {
@@ -124,21 +128,24 @@ int readDataKD() {
   //set JSON buffer
   StaticJsonBuffer<512> jsonBuffer;
   WiFiClient client;
+  
   if (client.connect(host, port)) {
 
     //client.setTimeout(2000);
-    Serial.println("Connected to server");
-    client.println(url);
+    //Serial.println("Connected to server");
+    
+    client.print(url);
+    client.print("\r\n");
     client.print("Host: ");
-    client.println(host);
-    client.println("Connection: close");
-    client.println("\r\n\r\n");
+    client.print(host);
+    client.print("\r\n");
+    client.print("Connection: close\r\n\r\n");
 
-    delay(100);
+    delay(500);
 
     if (client.find("[")) {
 
-      Serial.println("Header found");
+      //Serial.println("Header found");
 
       int i = 0;
 
@@ -146,6 +153,9 @@ int readDataKD() {
         jsonData[i] = client.read();;
         i++;
       }
+
+      client.stop();
+      
       jsonData[i] = '\0';
 
       //Serial.println(jsonData);
@@ -178,7 +188,7 @@ int readDataKD() {
 
   } else {
     Serial.println ("Unable to connect to server");
-    client.stop();
+    //client.stop();
     return 1;
   }
 
@@ -269,14 +279,14 @@ int readDataVU() {
 // windspeed vizualizacija su bars'ais
 void drawBars(float windspeed) {
 
-  int barWidth = 4;
+  int barWidth = 5;
   int barSpace = 1;
-  int barMaxHeight = 16;
-  int valueCount = 10;
+  int barMaxHeight = 22;
+  int valueCount = 8;
 
   //grafiko pradzios koordinates
   int x = 204;
-  int y = 38;
+  int y = 32;
   //bar'o x ir y koordinates
   int barY = 0;
   int barX = 0;
@@ -439,7 +449,7 @@ void showTemp(float temp) {
   //Temperaturos eilutei skiriame buferi pagal realu ilgi
   char tempstring[5];
 
-  //konvertuojame double i char eilte
+  //konvertuojame double i char eilute
   dtostrf(temp, 5, 1, tempstring);
 
   display.setTextColor(WHITE);
@@ -451,8 +461,28 @@ void showTemp(float temp) {
 }
 
 
-void showHumidity(float humidity){
+void showHumidity(int hum){
+  char humstring[3];
+  //char displaystring[5];
+
+  //konvertuojame double i char eilte
+  itoa(hum, humstring, 10);
+  /*
+  for (int i = 0; i < 4; i++){
+    displaystring[i] = humstring[i];
+  }
+  */
+  //humstring[3] = '%';
+  //displaystring[4] = '\n';
   
+  //dtostrf(humidity, 5, 1, humiditystring);
+
+  display.setTextColor(WHITE);
+  display.setFont(&FreeSansBold9pt7b);
+  display.setTextWrap(false);
+  display.setCursor(204, 16);
+  display.print(humstring);
+  display.print("%");
 }
 
 //
