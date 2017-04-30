@@ -135,7 +135,7 @@ int readDataKD() {
     client.println("Connection: close");
     client.println("\r\n\r\n");
 
-    delay(500);
+    delay(100);
 
     if (client.find("[")) {
 
@@ -179,6 +179,7 @@ int readDataKD() {
 
   } else {
     Serial.println ("Unable to connect to server");
+    client.stop();
     return 1;
   }
 
@@ -250,6 +251,7 @@ int readDataVU() {
 
   } else {
     Serial.println ("Unable to connect to server");
+    client.stop();
     return 1;
   }
 
@@ -261,6 +263,7 @@ int readDataVU() {
   }
   return 0;
 }
+
 
 
 // windspeed vizualizacija su bars'ais
@@ -445,6 +448,11 @@ void showTemp(float temp) {
   display.setCursor(0, 61);
   display.print(tempstring);
 
+}
+
+
+void showHumidity(float humidity){
+  
 }
 
 //
