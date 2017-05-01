@@ -9,9 +9,9 @@
 #include <Adafruit_GFX.h>
 #include <ESP8266_SSD1322.h>
 
-#include <Fonts/FreeSans9pt7b.h>
+//#include <Fonts/FreeSans9pt7b.h>
 #include <Fonts/FreeSansBold44pt7b.h>
-#include <Fonts/FreeSansBold9pt7b.h>
+#include <Fonts/FreeSansBold12pt7b.h>
 
 //ESP8266 Pins
 #define OLED_CS     15  // Pin 19, CS - Chip select
@@ -126,10 +126,10 @@ int readDataKD() {
   //set JSON buffer
   StaticJsonBuffer<512> jsonBuffer;
   WiFiClient client;
+  //client.setTimeout(1000);
 
   if (client.connect(host, port)) {
 
-    //client.setTimeout(2000);
     Serial.println("Connected");
 
     client.print(url);
@@ -137,9 +137,11 @@ int readDataKD() {
     client.print("Host: ");
     client.print(host);
     client.print("\r\n");
-    client.print("Connection: close\r\n\r\n");
+    client.print("Connection: close");
+    client.print("\r\n");
+    client.print("\r\n\r\n");
 
-    delay(200);
+    //delay(500);
 
     if (client.find("[")) {
       int i = 0;
@@ -160,8 +162,7 @@ int readDataKD() {
       dewpoint = root["rasos_taskas"];
       humidity = getHumidity(temperature, dewpoint);
 
-      //Serial.print("Reading Nr: ");
-      //Serial.println(readingSeq);
+
       Serial.print("Temperature: ");
       Serial.println(temperature);
       Serial.print("Windspeed: ");
@@ -170,6 +171,7 @@ int readDataKD() {
       Serial.println(dewpoint);
       Serial.print("Humidity: ");
       Serial.println(humidity);
+
     }
 
   } else {
@@ -178,6 +180,7 @@ int readDataKD() {
     return 1;
   }
   return 0;
+  //client.stop();
 }
 
 //read JSON data from VU server
@@ -441,23 +444,14 @@ void showTemp(float temp) {
 
 
 void showHumidity(int hum){
+
   char humstring[3];
-  //char displaystring[5];
 
   //konvertuojame double i char eilte
   itoa(hum, humstring, 10);
-  /*
-  for (int i = 0; i < 4; i++){
-    displaystring[i] = humstring[i];
-  }
-  */
-  //humstring[3] = '%';
-  //displaystring[4] = '\n';
-
-  //dtostrf(humidity, 5, 1, humiditystring);
 
   display.setTextColor(WHITE);
-  display.setFont(&FreeSansBold9pt7b);
+  display.setFont(&FreeSansBold12pt7b);
   display.setTextWrap(false);
   display.setCursor(204, 16);
   display.print(humstring);
@@ -488,7 +482,11 @@ float convertChar(char *a) {
 //Apskaiciuoja santykini dregnuma is dewpoint ir temperaturos
 float getHumidity(float T, float TD) {
 
-  float humidity = 100 * pow((112 - 0.1 * T + TD) / (112 + 0.9 * T), 8);
-  return humidity;
+  float hum = 100 * pow((112 - 0.1 * T + TD) / (112 + 0.9 * T), 8);
+
+  if (hum > 99 ){
+    hum = 99;
+  }
+  return hum;
 
 }
