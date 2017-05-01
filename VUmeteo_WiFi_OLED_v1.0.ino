@@ -141,9 +141,10 @@ int readDataKD() {
     client.print("\r\n");
     client.print("\r\n\r\n");
 
-    //delay(500);
+    delay(500);
 
     if (client.find("[")) {
+      Serial.println("Header OK");
       int i = 0;
       while (client.available()) {
         jsonData[i] = client.read();
@@ -161,7 +162,6 @@ int readDataKD() {
       windspeed = root["vejo_greitis_vidut"];
       dewpoint = root["rasos_taskas"];
       humidity = getHumidity(temperature, dewpoint);
-
 
       Serial.print("Temperature: ");
       Serial.println(temperature);
