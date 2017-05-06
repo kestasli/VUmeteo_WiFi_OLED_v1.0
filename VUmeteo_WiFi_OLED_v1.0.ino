@@ -128,7 +128,10 @@ int readDataKD() {
   WiFiClient client;
   //client.setTimeout(1000);
 
-  if (client.connect(host, port)) {
+  bool clientstatus = client.connect(host, port);
+  delay(500);
+
+  if (clientstatus) {
 
     Serial.println("Connected");
 
@@ -141,7 +144,7 @@ int readDataKD() {
     client.print("\r\n");
     client.print("\r\n\r\n");
 
-    delay(500);
+    delay(100);
 
     if (client.find("[")) {
       Serial.println("Header OK");
