@@ -121,10 +121,10 @@ void loop() {
 
 //read JSON data from eismoinfo.lt server
 int readDataKD() {
-  char jsonData[512];
+  char jsonData[1024];
 
   //set JSON buffer
-  StaticJsonBuffer<512> jsonBuffer;
+  StaticJsonBuffer<1024> jsonBuffer;
   WiFiClient client;
   //client.setTimeout(1000);
 
